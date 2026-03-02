@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafio Binário - Professor Fernando</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background-color: #f4f4f4; padding: 20px; }
+        #target-number { color: #ff0000; font-size: 4rem; font-weight: bold; margin: 20px 0; }
+        .container { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 30px; }
+        .bit-control { display: flex; flex-direction: column; align-items: center; }
+        .lamp { 
+            width: 50px; height: 80px; background-color: #444; border-radius: 25px; 
+            cursor: pointer; border: 3px solid #222; transition: 0.3s;
+        }
+        .lamp.on { background-color: #ffeb3b; box-shadow: 0 0 20px #ffeb3b; }
+        .weight { font-size: 0.8rem; margin-top: 5px; color: #666; }
+        button { padding: 10px 20px; font-size: 1rem; cursor: pointer; border: none; border-radius: 5px; transition: 0.2s; }
+        #btn-check { background-color: #2196F3; color: white; }
+        #btn-reset { background-color: #607d8b; color: white; margin-left: 10px; }
+        #message { margin-top: 20px; font-size: 1.5rem; font-weight: bold; min-height: 2rem; }
+    </style>
+</head>
+<body>
+
+    <h2>Converta o número para Binário:</h2>
+    <div id="target-number">0</div>
+
+    <div class="container" id="lamps-container">
+        </div>
+
+    <div>
+        <button id="btn-check" onclick="checkAnswer()">Conferir Resposta</button>
+        <button id="btn-reset" onclick="initGame()">Novo Número</button>
+    </div>
+
+    <div id="message"></div>
+
+    <script>
+        let currentTarget = 0;
+        const totalBits = 10;
+
+        function initGame() {
+            currentTarget = Math.floor(Math.random() * 1024);
+            document.getElementById('target-number').innerText = currentTarget;
+            document.getElementById('message').innerText = "";
+            document.getElementById('message').style.color = "black";
+            
+            const container = document.getElementById('lamps-container');
+            container.innerHTML = "";
+
+            for (let i = totalBits - 1; i >= 0; i--) {
+                const val = Math.pow(2, i);
+                const div = document.createElement('div');
+                div.className = 'bit-control';
+                div.innerHTML = `
+                    <div class="lamp" id="lamp-${i}" onclick="toggleLamp(${i})"></div>
+                    <div class="weight">2<sup>${i}</sup><br>(${val})</div>
+                `;
+                container.appendChild(div);
+            }
+        }
+
+        function toggleLamp(index) {
+            const lamp = document.getElementById(`lamp-${index}`);
+            lamp.classList.toggle('on');
+        }
+
+        function checkAnswer() {
+            let total = 0;
+            for (let i = 0; i < totalBits; i++) {
+                if (document.getElementById(`lamp-${i}`).classList.contains('on')) {
+                    total += Math.pow(2, i);
+                }
+            }
+
+            const msg = document.getElementById('message');
+            if (total === currentTarget) {
+                msg.innerText = "Parabéns! Você acertou! 🎉";
+                msg.style.color = "green";
+            } else {
+                msg.innerText = `Ops! O valor atual é ${total}. Tente novamente!`;
+                msg.style.color = "red";
+            }
+        }
+
+        window.onload = initGame;
+    </script>
+</body>
+</html>
